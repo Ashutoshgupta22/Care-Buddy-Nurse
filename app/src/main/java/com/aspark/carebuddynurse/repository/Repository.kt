@@ -4,25 +4,32 @@ import android.util.Log
 import com.aspark.carebuddynurse.api.Api
 import com.aspark.carebuddynurse.api.LoginRequest
 import com.aspark.carebuddynurse.model.Nurse
+import com.aspark.carebuddynurse.retrofit.HttpStatusCode
 import com.aspark.carebuddynurse.retrofit.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.inject.Inject
 
-class Repository {
+class Repository @Inject constructor( private val api: Api) {
 
-    private val api = RetrofitService
-        .retrofit
-        .create(Api::class.java)
+//    private val api = RetrofitService
+//        .retrofit
+//        .create(Api::class.java)
 
 
-    fun login(email: String, password: String, firebaseToken: String) {
+    fun login(email: String, password: String,
+              firebaseToken: String, callback: (HttpStatusCode) -> Unit) {
 
         val loginRequest = LoginRequest(email,password)
         Log.d("Repository", "login: $loginRequest")
 
+//         val api = RetrofitService
+//            .retrofit
+//            .create(Api::class.java)
+
         //TODO catch java.net.ConnectException, when couldn't connect with backend and show toast
-        api.loginNurse(loginRequest)
+        api.loginNurse( loginRequest)
             .enqueue(object : Callback<Nurse> {
 
                 override fun onResponse(call: Call<Nurse>, response: Response<Nurse>) {
@@ -34,28 +41,31 @@ class Repository {
 
                         setNurseFirebaseToken(firebaseToken, email)
 
-                        mCallActivity.value = true
+                       // mCallActivity.value = true
+                        callback(HttpStatusCode.OK)
 
                     }
-                    else if(response.code() == 403){
-                        Log.e("Repository", "onResponse: Response " +
-                                "unsuccessful invalid email ")
-
-                        mLoginErrorMessage.value = "Invalid email or password"
-                    }
-                    else if (response.code() == 401){
+                    else if (response.code() == HttpStatusCode.UNAUTHORIZED.code) {
 
                         Log.e("Repository", "onResponse: Response " +
                                 "email not registered ")
 
-                        mLoginErrorMessage.value = "Email not registered"
+                        //mLoginErrorMessage.value = "Email not registered"
+                        callback(HttpStatusCode.UNAUTHORIZED)
+                    }
+                    else if(response.code() == HttpStatusCode.FORBIDDEN.code) {
+                        Log.e("Repository", "onResponse: Response " +
+                                "unsuccessful invalid email ")
 
+                        // mLoginErrorMessage.value = "Invalid email or password"
+                        callback(HttpStatusCode.FORBIDDEN)
                     }
                 }
 
                 override fun onFailure(call: Call<Nurse>, t: Throwable) {
-                    showNetworkError.value = true
-                    Log.e("Repository", "onFailure: Nurse login Failed", t.cause )
+                   // showNetworkError.value = true
+                    callback(HttpStatusCode.FAILED)
+                    Log.e("Repository", "onFailure: Nurse login Failed", t )
                 }
             })
     }
@@ -63,6 +73,9 @@ class Repository {
     private fun setNurseFirebaseToken(firebaseToken: String, email: String) {
 
         Nurse.currentNurse.firebaseToken = firebaseToken
+//         val api = RetrofitService
+//            .retrofit
+//            .create(Api::class.java)
 
         api
             .setNurseFirebaseToken(email, firebaseToken)

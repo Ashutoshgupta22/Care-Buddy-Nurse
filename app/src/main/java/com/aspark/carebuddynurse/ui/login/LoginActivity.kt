@@ -26,12 +26,22 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val preferences = getSharedPreferences(packageName, MODE_PRIVATE)
-        val firebaseToken = preferences.getString("firebase_token", null)
+        val isSignedIn = preferences.getBoolean("is_signed_in", false)
+
+        if (isSignedIn) {
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         binding.btNurseLogin.setOnClickListener {
 
+            val firebaseToken = preferences.getString("firebase_token", null)
+
             val email = binding.etEmail.text.toString()
             val password  = binding.etPassword.text.toString()
+
+            Log.d("LoginActivity", "onCreate: token= $firebaseToken")
             viewModel.loginClickListener(email, password, firebaseToken!!)
         }
 
