@@ -1,4 +1,4 @@
-package com.aspark.carebuddynurse.ui.login
+package com.aspark.carebuddynurse.ui.auth
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor( private val repo: Repository) : ViewModel() {
+class AuthViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
 
     private val mCallActivity = MutableLiveData<Boolean>()
     val callActivity: LiveData<Boolean> = mCallActivity
@@ -22,7 +22,7 @@ class LoginViewModel @Inject constructor( private val repo: Repository) : ViewMo
     val showNetworkError: LiveData<Boolean> = mShowNetworkError
 
 
-    fun loginClickListener(email: String, password: String, firebaseToken: String) {
+    fun login(email: String, password: String, firebaseToken: String) {
 
         viewModelScope.launch(Dispatchers.IO) {
 

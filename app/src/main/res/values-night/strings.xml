@@ -5,4 +5,12 @@
     <string name="password">Password</string>
     <string name="sign_out">Sign Out</string>
     <string name="home">Home</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="age">Age\n</string>
+    <string name="confirmPassword">Confirm Password\n</string>
+    <string name="signup">Sign Up</string>
+    <string name="tell_about_yourself">Tell about yourself</string>
+    <string name="qualifications">Qualifications\n</string>
+    <string name="experience">Experience\n</string>
 </resources>

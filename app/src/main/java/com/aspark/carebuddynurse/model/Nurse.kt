@@ -1,9 +1,10 @@
 package com.aspark.carebuddynurse.model
 
-class Nurse {
+class Nurse private constructor(){
 
     var id =  0
-    var name: String? = null
+    var firstName: String? = null
+    var lastName: String = ""
     var age = 0
     var email: String? = null
     var password: String? = null
@@ -14,7 +15,8 @@ class Nurse {
     var userRole : String? = null
     var locked = false
     var enabled = false
-
+    var qualifications: String = ""
+    var specialities = arrayListOf<String>()
 
     companion object{
         var currentNurse = Nurse()

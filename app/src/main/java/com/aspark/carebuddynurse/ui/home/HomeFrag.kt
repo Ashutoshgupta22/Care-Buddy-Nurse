@@ -4,29 +4,44 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.aspark.carebuddynurse.R
-import com.aspark.carebuddynurse.databinding.ActivityHomeBinding
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.navigation.findNavController
+import com.aspark.carebuddynurse.databinding.FragmentHomeBinding
 import com.aspark.carebuddynurse.model.Nurse
-import com.aspark.carebuddynurse.ui.login.LoginActivity
+import com.aspark.carebuddynurse.ui.MainActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-class HomeActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class HomeFrag: Fragment() {
 
-    private lateinit var binding: ActivityHomeBinding
+    private lateinit var binding: FragmentHomeBinding
     private val viewModel : HomeViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
 
-        binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val navController = view.findNavController()
 
         checkPermissions()
 
@@ -35,23 +50,23 @@ class HomeActivity : AppCompatActivity() {
         binding.btnSignOut.setOnClickListener {
 
             setIsNurseSignedIn(false)
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
+//            val intent = Intent(requireContext(), MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
         }
     }
 
     private fun checkPermissions() {
 
         //check if notification permission granted
-        if (ContextCompat.checkSelfPermission(this,
+        if (ContextCompat.checkSelfPermission(requireContext(),
                 Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED)
             Log.i("HomeActivity", "onCreate: Checked notification permission granted")
 
         else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
 
             //show a educational ui to inform the user of benefits of accepting this permission
-            Toast.makeText(this, "Accept notification permission to not " +
+            Toast.makeText(requireContext(), "Accept notification permission to not " +
                     "miss any update about your bookings",
                 Toast.LENGTH_LONG).show()
         }
@@ -82,14 +97,15 @@ class HomeActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // no need to ask notification permission for android version below 13
-             notificationPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS)
+            notificationPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
 
     }
 
     private fun setIsNurseSignedIn(b: Boolean) {
 
-        val preferences = getSharedPreferences(packageName, MODE_PRIVATE)
+        val preferences = requireContext().getSharedPreferences(requireContext().packageName,
+            AppCompatActivity.MODE_PRIVATE)
         val editor = preferences.edit()
 
         Log.i("nurseHomeActivity", "setNurseSignedIn: isSignedIn $b")
@@ -102,4 +118,3 @@ class HomeActivity : AppCompatActivity() {
         editor.apply()
     }
 }
-
