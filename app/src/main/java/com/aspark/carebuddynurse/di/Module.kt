@@ -11,7 +11,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-class Module {
+object Module {
 
     @Provides
     fun provideRepository(api: Api): Repository {

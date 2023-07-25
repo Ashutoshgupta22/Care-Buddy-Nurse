@@ -4,8 +4,8 @@ import android.util.Log
 import com.aspark.carebuddynurse.api.Api
 import com.aspark.carebuddynurse.api.LoginRequest
 import com.aspark.carebuddynurse.model.Nurse
+import com.aspark.carebuddynurse.model.Nurse.Companion.currentNurse
 import com.aspark.carebuddynurse.retrofit.HttpStatusCode
-import com.aspark.carebuddynurse.retrofit.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,7 +29,7 @@ class Repository @Inject constructor( private val api: Api) {
 //            .create(Api::class.java)
 
         //TODO catch java.net.ConnectException, when couldn't connect with backend and show toast
-        api.loginNurse( loginRequest)
+        api.login( loginRequest)
             .enqueue(object : Callback<Nurse> {
 
                 override fun onResponse(call: Call<Nurse>, response: Response<Nurse>) {
@@ -37,7 +37,7 @@ class Repository @Inject constructor( private val api: Api) {
                     if (response.isSuccessful ) {
 
                         Log.i("Repository", "Welcome Back!")
-                        Nurse.currentNurse = response.body()!!
+                        currentNurse = response.body()!!
 
                         setNurseFirebaseToken(firebaseToken, email)
 
@@ -65,14 +65,14 @@ class Repository @Inject constructor( private val api: Api) {
                 override fun onFailure(call: Call<Nurse>, t: Throwable) {
                    // showNetworkError.value = true
                     callback(HttpStatusCode.FAILED)
-                    Log.e("Repository", "onFailure: Nurse login Failed", t )
+                    Log.e("Repository", "onFailure: Boolean login Failed", t )
                 }
             })
     }
 
     private fun setNurseFirebaseToken(firebaseToken: String, email: String) {
 
-        Nurse.currentNurse.firebaseToken = firebaseToken
+        currentNurse.firebaseToken = firebaseToken
 //         val api = RetrofitService
 //            .retrofit
 //            .create(Api::class.java)
@@ -97,6 +97,33 @@ class Repository @Inject constructor( private val api: Api) {
                 }
             })
 
+    }
+
+    fun signUp(nurse: Nurse, callback: (HttpStatusCode) -> Unit) {
+
+        api
+            .signUp(nurse)
+            .enqueue(object : Callback<Nurse> {
+
+                override fun onResponse(call: Call<Nurse>, response: Response<Nurse>) {
+
+                    if (response.isSuccessful && response.body() != null) {
+
+                        callback(HttpStatusCode.OK)
+                    }
+                    else {
+                        Log.e("Repository", "onResponse: Signup Response unsuccessful")
+                        callback(HttpStatusCode.FAILED)
+                    }
+                }
+
+                override fun onFailure(call: Call<Nurse>, t: Throwable) {
+
+                    Log.e("Repository", "onFailure: Signup Failed", t)
+                    callback(HttpStatusCode.FAILED)
+                }
+
+            })
     }
 
 }

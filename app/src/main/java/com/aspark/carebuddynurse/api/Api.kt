@@ -9,7 +9,10 @@ import retrofit2.http.Path
 interface Api {
 
     @POST("/api/nurse/login")
-    fun loginNurse(@Body loginRequest: LoginRequest) : Call<Nurse>
+    fun login(@Body loginRequest: LoginRequest) : Call<Nurse>
+
+    @POST("/api/nurse/signup")
+    fun signUp(@Body nurse: Nurse): Call<Nurse>
 
     @POST("/api/nurse/set-firebase-token/{email}")
     fun setNurseFirebaseToken(@Path(value = "email") email: String,

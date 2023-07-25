@@ -4,6 +4,8 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'androidx.navigation.safeargs.kotlin'
+
 }
 
 android {
@@ -41,16 +43,30 @@ android {
 
 dependencies {
 
+    //glide
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.2'
+
+    // flexbox
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+
+    //navigation
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
+
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     
     //hilt
     implementation "com.google.dagger:hilt-android:2.44"
+    implementation 'androidx.annotation:annotation:1.6.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     kapt "com.google.dagger:hilt-compiler:2.44"
 
     //firebase
-    implementation 'com.google.firebase:firebase-messaging-ktx:23.1.2'
+    implementation 'com.google.firebase:firebase-messaging-ktx:23.2.0'
 
     //by viewModels()
     implementation 'androidx.fragment:fragment-ktx:1.6.0'
