@@ -106,4 +106,18 @@
         tools:layout_editor_absoluteX="141dp"
         tools:layout_editor_absoluteY="298dp" />
 
+    <TextView
+        android:id="@+id/tv_signup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/signup"
+        android:textSize="20sp"
+        android:textColor="@color/purple_500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="30dp"
+        tools:layout_editor_absoluteX="83dp"
+        tools:layout_editor_absoluteY="403dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

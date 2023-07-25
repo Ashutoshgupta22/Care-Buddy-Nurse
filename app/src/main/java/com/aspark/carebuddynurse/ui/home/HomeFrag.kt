@@ -17,9 +17,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.aspark.carebuddynurse.databinding.FragmentHomeBinding
 import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.ui.MainActivity
+import com.aspark.carebuddynurse.ui.auth.LoginFragDirections
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -41,18 +43,30 @@ class HomeFrag: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navController = view.findNavController()
+        val navController = findNavController()
 
-        checkPermissions()
+        val preferences = requireContext().getSharedPreferences(requireContext().packageName,
+            AppCompatActivity.MODE_PRIVATE)
+        val isSignedIn = preferences.getBoolean("is_signed_in", false)
 
-        setIsNurseSignedIn(true)
+        if (! isSignedIn) {
+
+            val action = HomeFragDirections.actionHomeFragToLoginFrag()
+            navController.navigate(action)
+        }
+        else {
+            checkPermissions()
+            setIsNurseSignedIn(true)
+        }
+
+        Log.d("HomeFrag", "onViewCreated: Home Frag called")
 
         binding.btnSignOut.setOnClickListener {
 
             setIsNurseSignedIn(false)
-//            val intent = Intent(requireContext(), MainActivity::class.java)
-//            startActivity(intent)
-//            finish()
+            val action = HomeFragDirections.actionHomeFragToLoginFrag()
+            navController.navigate(action)
+          //  navController.popBackStack()
         }
     }
 

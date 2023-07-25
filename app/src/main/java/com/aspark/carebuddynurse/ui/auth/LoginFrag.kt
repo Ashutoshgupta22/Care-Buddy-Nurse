@@ -9,16 +9,19 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.doAfterTextChanged
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.aspark.carebuddynurse.databinding.FragmentLoginBinding
+import com.aspark.carebuddynurse.model.Nurse
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginFrag : Fragment() {
 
-    private val viewModel: AuthViewModel by viewModels()
     private lateinit var binding: FragmentLoginBinding
+    private val authViewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,18 +36,10 @@ class LoginFrag : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navController = view.findNavController()
+        val navController = findNavController()
 
         val preferences = requireContext().getSharedPreferences(requireContext().packageName,
             AppCompatActivity.MODE_PRIVATE)
-        val isSignedIn = preferences.getBoolean("is_signed_in", false)
-
-        if (isSignedIn) {
-
-            val action = LoginFragDirections.actionLoginFragToHomeFrag()
-            navController.navigate(action)
-            //finish()
-        }
 
         binding.btNurseLogin.setOnClickListener {
 
@@ -54,26 +49,30 @@ class LoginFrag : Fragment() {
             val password  = binding.etPassword.text.toString()
 
             Log.d("LoginActivity", "onCreate: token= $firebaseToken")
-            viewModel.login(email, password, firebaseToken!!)
+            authViewModel.login(email, password, firebaseToken!!)
+        }
+
+        binding.tvSignup.setOnClickListener {
+            val action = LoginFragDirections.actionLoginFragToSignUpFrag()
+            navController.navigate(action)
         }
 
         binding.etEmail.doAfterTextChanged { hideErrorLogin() }
         binding.etPassword.doAfterTextChanged { hideErrorLogin() }
 
-        viewModel.callActivity.observe(viewLifecycleOwner) {
+        authViewModel.callActivity.observe(viewLifecycleOwner) {
 
             Log.d("NurseLoginActivity", "onCreate: callActivity observer called")
 
             it?.let {
                 if (it){
-                    val action = LoginFragDirections.actionLoginFragToHomeFrag()
-                    navController.navigate(action)
-                   // finish()
+                    setIsNurseSignedIn(true)
+                    navController.popBackStack()
                 }
             }
         }
 
-        viewModel.loginErrorMessage.observe(viewLifecycleOwner){
+        authViewModel.loginErrorMessage.observe(viewLifecycleOwner){
 
             it?.let {
 
@@ -82,7 +81,7 @@ class LoginFrag : Fragment() {
             }
         }
 
-        viewModel.showNetworkError.observe(viewLifecycleOwner){
+        authViewModel.showNetworkError.observe(viewLifecycleOwner){
 
             Log.d("NurseLoginActivity", "onCreate: showNetwork observer called")
 
@@ -108,4 +107,21 @@ class LoginFrag : Fragment() {
         Toast.makeText(requireContext(), "Something went wrong! Please try again later",
             Toast.LENGTH_SHORT).show()
     }
+
+    private fun setIsNurseSignedIn(b: Boolean) {
+
+        val preferences = requireContext().getSharedPreferences(requireContext().packageName,
+            AppCompatActivity.MODE_PRIVATE)
+        val editor = preferences.edit()
+
+        Log.i("nurseHomeActivity", "setNurseSignedIn: isSignedIn $b")
+
+        editor.putBoolean("is_signed_in", b)
+
+        if (b)
+            editor.putString("nurseEmail", Nurse.currentNurse.email)
+
+        editor.apply()
+    }
+
 }

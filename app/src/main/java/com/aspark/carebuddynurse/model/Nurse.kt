@@ -15,8 +15,10 @@ class Nurse private constructor(){
     var userRole : String? = null
     var locked = false
     var enabled = false
+    var biography: String = ""
+    var experience: Int = 0
     var qualifications: String = ""
-    var specialities = arrayListOf<String>()
+    var specialities: ArrayList<String> = arrayListOf()
 
     companion object{
         var currentNurse = Nurse()
