@@ -13,4 +13,6 @@
     <string name="tell_about_yourself">Tell about yourself</string>
     <string name="qualifications">Qualifications\n</string>
     <string name="experience">Experience\n</string>
+    <string name="specialities">Specialities</string>
+    <string name="in_years">(in years)</string>
 </resources>
