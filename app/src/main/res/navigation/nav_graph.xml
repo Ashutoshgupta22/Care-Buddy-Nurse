@@ -11,7 +11,9 @@
         <action
             android:id="@+id/action_loginFrag_to_signUpFrag"
             app:destination="@id/signUpFrag" />
+
     </fragment>
+
     <fragment
         android:id="@+id/signUpFrag"
         android:name="com.aspark.carebuddynurse.ui.auth.SignUpFrag"
@@ -20,12 +22,24 @@
             android:id="@+id/action_signUpFrag_to_loginFrag"
             app:destination="@id/loginFrag" />
     </fragment>
+
     <fragment
         android:id="@+id/homeFrag"
         android:name="com.aspark.carebuddynurse.ui.home.HomeFrag"
         android:label="HomeFrag" >
         <action
             android:id="@+id/action_homeFrag_to_loginFrag"
+            app:destination="@id/loginFrag" />
+        <action
+            android:id="@+id/action_homeFrag_to_accountFrag"
+            app:destination="@id/accountFrag" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountFrag"
+        android:name="com.aspark.carebuddynurse.ui.account.AccountFrag"
+        android:label="AccountFrag" >
+        <action
+            android:id="@+id/action_accountFrag_to_loginFrag"
             app:destination="@id/loginFrag" />
     </fragment>
 </navigation>

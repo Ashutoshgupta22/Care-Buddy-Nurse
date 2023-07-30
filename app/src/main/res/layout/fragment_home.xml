@@ -5,18 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btn_sign_out"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sign_out"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="16dp"/>
-
-
     <ImageView
-        android:id="@+id/ic_location"
+        android:id="@+id/iv_home_location"
         android:layout_width="25dp"
         android:layout_height="25dp"
         app:srcCompat="@drawable/ic_location"
@@ -36,7 +26,7 @@
         android:textSize="18sp"
         tools:layout_editor_absoluteX="78dp"
         tools:layout_editor_absoluteY="34dp"
-        app:layout_constraintStart_toEndOf="@id/ic_location"
+        app:layout_constraintStart_toEndOf="@id/iv_home_location"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="5dp"/>
@@ -53,9 +43,11 @@
         android:layout_marginStart="5dp"/>
 
     <ImageView
-        android:id="@+id/ic_account"
+        android:id="@+id/iv_home_profile_pic"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:background="@drawable/bg_profile_pic"
+        android:clipToOutline="true"
         app:srcCompat="@drawable/ic_account_circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"

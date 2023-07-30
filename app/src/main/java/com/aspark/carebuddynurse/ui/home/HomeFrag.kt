@@ -1,8 +1,10 @@
 package com.aspark.carebuddynurse.ui.home
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -22,6 +25,7 @@ import com.aspark.carebuddynurse.databinding.FragmentHomeBinding
 import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.ui.MainActivity
 import com.aspark.carebuddynurse.ui.auth.LoginFragDirections
+import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -45,6 +49,17 @@ class HomeFrag: Fragment() {
 
         val navController = findNavController()
 
+        if ( Nurse.currentNurse.profilePic.isNotEmpty() ) {
+
+            setProfilePic(Nurse.currentNurse.profilePic.toUri())
+        }
+
+        binding.ivHomeProfilePic.setOnClickListener {
+
+            val action = HomeFragDirections.actionHomeFragToAccountFrag()
+            navController.navigate(action)
+        }
+
         val preferences = requireContext().getSharedPreferences(requireContext().packageName,
             AppCompatActivity.MODE_PRIVATE)
         val isSignedIn = preferences.getBoolean("is_signed_in", false)
@@ -61,13 +76,6 @@ class HomeFrag: Fragment() {
 
         Log.d("HomeFrag", "onViewCreated: Home Frag called")
 
-        binding.btnSignOut.setOnClickListener {
-
-            setIsNurseSignedIn(false)
-            val action = HomeFragDirections.actionHomeFragToLoginFrag()
-            navController.navigate(action)
-          //  navController.popBackStack()
-        }
     }
 
     private fun checkPermissions() {
@@ -130,5 +138,15 @@ class HomeFrag: Fragment() {
             editor.putString("nurseEmail", Nurse.currentNurse.email)
 
         editor.apply()
+    }
+
+
+    private fun setProfilePic(it: Uri) {
+
+        Glide
+            .with(requireContext())
+            .load(it)
+            .centerCrop()
+            .into(binding.ivHomeProfilePic)
     }
 }

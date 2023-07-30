@@ -6,6 +6,7 @@ class Nurse private constructor(){
     var firstName: String? = null
     var lastName: String = ""
     var age = 0
+    var profilePic: String = ""
     var email: String? = null
     var password: String? = null
     var pincode: String? = null
