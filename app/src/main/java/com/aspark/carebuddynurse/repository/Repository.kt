@@ -6,6 +6,7 @@ import com.aspark.carebuddynurse.api.LoginRequest
 import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.model.Nurse.Companion.currentNurse
 import com.aspark.carebuddynurse.retrofit.HttpStatusCode
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -13,20 +14,12 @@ import javax.inject.Inject
 
 class Repository @Inject constructor( private val api: Api) {
 
-//    private val api = RetrofitService
-//        .retrofit
-//        .create(Api::class.java)
 
-
-    fun login(email: String, password: String,
+    fun login(nurseEmail: String, password: String,
               firebaseToken: String, callback: (HttpStatusCode) -> Unit) {
 
-        val loginRequest = LoginRequest(email,password)
+        val loginRequest = LoginRequest(nurseEmail,password)
         Log.d("Repository", "login: $loginRequest")
-
-//         val api = RetrofitService
-//            .retrofit
-//            .create(Api::class.java)
 
         //TODO catch java.net.ConnectException, when couldn't connect with backend and show toast
         api.login( loginRequest)
@@ -38,10 +31,16 @@ class Repository @Inject constructor( private val api: Api) {
 
                         Log.i("Repository", "Welcome Back!")
                         currentNurse = response.body()!!
+//                        val(id, firstName, lastName, email) = response.body()!!
+//                        currentNurse.id = id
+//                        currentNurse.firstName = firstName
+//                        currentNurse.lastName = lastName
+//                        currentNurse.email = email
 
-                        setNurseFirebaseToken(firebaseToken, email)
+                        Log.i("Repository", "onResponse: nurseid-${currentNurse.id}")
 
-                       // mCallActivity.value = true
+                        setNurseFirebaseToken(firebaseToken, nurseEmail)
+
                         callback(HttpStatusCode.OK)
 
                     }
@@ -50,20 +49,17 @@ class Repository @Inject constructor( private val api: Api) {
                         Log.e("Repository", "onResponse: Response " +
                                 "email not registered ")
 
-                        //mLoginErrorMessage.value = "Email not registered"
                         callback(HttpStatusCode.UNAUTHORIZED)
                     }
                     else if(response.code() == HttpStatusCode.FORBIDDEN.code) {
                         Log.e("Repository", "onResponse: Response " +
                                 "unsuccessful invalid email ")
 
-                        // mLoginErrorMessage.value = "Invalid email or password"
                         callback(HttpStatusCode.FORBIDDEN)
                     }
                 }
 
                 override fun onFailure(call: Call<Nurse>, t: Throwable) {
-                   // showNetworkError.value = true
                     callback(HttpStatusCode.FAILED)
                     Log.e("Repository", "onFailure: Boolean login Failed", t )
                 }
@@ -73,9 +69,6 @@ class Repository @Inject constructor( private val api: Api) {
     private fun setNurseFirebaseToken(firebaseToken: String, email: String) {
 
         currentNurse.firebaseToken = firebaseToken
-//         val api = RetrofitService
-//            .retrofit
-//            .create(Api::class.java)
 
         api
             .setNurseFirebaseToken(email, firebaseToken)
@@ -96,7 +89,6 @@ class Repository @Inject constructor( private val api: Api) {
                             "set firebase token FAILED" )
                 }
             })
-
     }
 
     fun signUp(nurse: Nurse, callback: (HttpStatusCode) -> Unit) {
@@ -122,8 +114,63 @@ class Repository @Inject constructor( private val api: Api) {
                     Log.e("Repository", "onFailure: Signup Failed", t)
                     callback(HttpStatusCode.FAILED)
                 }
-
             })
     }
 
+    fun uploadProfilePic(body: MultipartBody.Part, id: Int) {
+
+        Log.i("Repository", "uploadProfilePic:nurseId-$id")
+
+        api
+            .uploadProfilePic(body, id)
+            .enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>,
+                                        response: Response<String>) {
+
+
+                    if (response.isSuccessful && response.body() != null)
+                        Log.i("Repository", "onResponse: Profile pic link- "
+                        + response.body().toString())
+
+                    else Log.e("Repository", "onResponse: Profile pic" +
+                            " upload UNSUCCESSFUL- ${response.code()}" )
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+
+                    Log.e("Repository", "onFailure: Profile pic upload FAILED ", t )
+
+                }
+            })
+    }
+
+    fun getNurseById(nurseId: Int, callback: (HttpStatusCode) -> Unit) {
+
+        api
+            .getNurseById(nurseId)
+            .enqueue(object : Callback<Nurse> {
+                override fun onResponse(call: Call<Nurse>, response: Response<Nurse>) {
+
+                    if (response.isSuccessful && response.body()!= null)
+                        currentNurse = response.body()!!
+
+                    else {
+                        callback(HttpStatusCode.FAILED)
+                        Log.e("Repository", "onResponse: " +
+                                "getNurseById UNSUCCESSFUL ${response.code()}" )
+                    }
+
+
+                }
+
+                override fun onFailure(call: Call<Nurse>, t: Throwable) {
+
+                    callback(HttpStatusCode.FAILED)
+                    Log.e("Repository", "onFailure: " +
+                            "getNurseById FAILED", t )
+
+                }
+
+            })
+    }
 }

@@ -16,9 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.aspark.carebuddynurse.databinding.FragmentAccountBinding
-import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.model.Nurse.Companion.currentNurse
-import com.aspark.carebuddynurse.ui.home.HomeFragDirections
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -44,7 +42,9 @@ class AccountFrag: Fragment() {
                 setProfilePic(it)
                 currentNurse.profilePic = it.toString()
 
-                viewModel.uploadProfilePic()
+                val contentResolver = requireContext().contentResolver
+                val cacheDir = requireContext().cacheDir
+                viewModel.uploadProfilePic(it, currentNurse.id, contentResolver, cacheDir)
             }
             else Log.d("AccountFrag", "onViewCreated: No image selected")
         }
@@ -67,6 +67,11 @@ class AccountFrag: Fragment() {
 
 //        activity?.actionBar?.setDisplayShowTitleEnabled(true)
 //        activity?.actionBar?.title = "Account"
+
+        if (currentNurse.email.isNotEmpty()){
+            binding.tvAccountName.text = "${currentNurse.firstName} ${currentNurse.lastName}"
+            binding.tvAccountEmail.text = currentNurse.email
+        }
 
         if ( currentNurse.profilePic.isNotEmpty() ) {
 

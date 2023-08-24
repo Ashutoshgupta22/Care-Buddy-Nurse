@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.aspark.carebuddynurse.databinding.FragmentLoginBinding
 import com.aspark.carebuddynurse.model.Nurse
+import com.aspark.carebuddynurse.model.Nurse.Companion.currentNurse
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -118,8 +119,10 @@ class LoginFrag : Fragment() {
 
         editor.putBoolean("is_signed_in", b)
 
+        Log.i("LoginFrag", "setIsNurseSignedIn: nurseId-${currentNurse.id} ")
+
         if (b)
-            editor.putString("nurseEmail", Nurse.currentNurse.email)
+            editor.putInt("nurseId", currentNurse.id)
 
         editor.apply()
     }

@@ -7,7 +7,7 @@ class Nurse private constructor(){
     var lastName: String = ""
     var age = 0
     var profilePic: String = ""
-    var email: String? = null
+    var email: String = ""
     var password: String? = null
     var pincode: String? = null
     var firebaseToken: String? = null
@@ -24,5 +24,11 @@ class Nurse private constructor(){
     companion object{
         var currentNurse = Nurse()
     }
+
+    operator fun component1() = id
+    operator fun component2() = firstName
+    operator fun component3() = lastName
+    operator fun component4() = email
+
 
 }
