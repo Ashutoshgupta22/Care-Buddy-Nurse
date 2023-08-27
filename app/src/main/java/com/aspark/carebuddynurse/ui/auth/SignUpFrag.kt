@@ -1,28 +1,18 @@
 package com.aspark.carebuddynurse.ui.auth
 
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.aspark.carebuddynurse.R
 import com.aspark.carebuddynurse.databinding.FragmentSignupBinding
-import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.model.Nurse.Companion.currentNurse
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.dialog.MaterialDialogs
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.Arrays
 import java.util.logging.Level
 import java.util.logging.Logger
 
@@ -30,7 +20,7 @@ import java.util.logging.Logger
 class SignUpFrag: Fragment() {
 
     private lateinit var binding: FragmentSignupBinding
-    private val authViewModel : AuthViewModel by activityViewModels()
+    private val AuthViewModel : AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,18 +36,18 @@ class SignUpFrag: Fragment() {
 
         val navController = findNavController()
 
-        authViewModel.startActivity.observe(viewLifecycleOwner){
+        AuthViewModel.startActivity.observe(viewLifecycleOwner){
             it?.let {
 
                 if (it) {
-                    val action = SignUpFragDirections.actionSignUpFragToLoginFrag()
-                    navController.navigate(action)
-                    //navController.popBackStack()
+//                    val action = SignUpFragDirections.actionSignUpFragToLoginFrag()
+//                    navController.navigate(action)
+                    navController.popBackStack(R.id.loginFrag, false)
                 }
             }
         }
 
-        authViewModel.signUpFailedError.observe(viewLifecycleOwner){
+        AuthViewModel.signUpFailedError.observe(viewLifecycleOwner){
             it?.let { showSignUpFailed(it) }
         }
 
@@ -121,7 +111,7 @@ class SignUpFrag: Fragment() {
                 nurse.email = sEmail
                 nurse.password = sPassword
 
-                authViewModel.signup(nurse)
+                AuthViewModel.signup(nurse)
             }
         }
 

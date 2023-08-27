@@ -3,7 +3,6 @@ package com.aspark.carebuddynurse.ui
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.NavHost
 import com.aspark.carebuddynurse.R
 import com.aspark.carebuddynurse.databinding.ActivityMainBinding
@@ -14,7 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val authViewModel: AuthViewModel by viewModels()
+    private val AuthViewModel: AuthViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -15,8 +15,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AuthViewModel @Inject constructor(private val repo: Repository) : ViewModel() {
 
-    private val mCallActivity = MutableLiveData<Boolean>()
-    val callActivity: LiveData<Boolean> = mCallActivity
+    private val _loginSuccess = MutableLiveData<Boolean>()
+    val loginSuccess: LiveData<Boolean> = _loginSuccess
 
     private val mLoginErrorMessage = MutableLiveData<String>()
     val loginErrorMessage: LiveData<String> = mLoginErrorMessage
@@ -30,6 +30,9 @@ class AuthViewModel @Inject constructor(private val repo: Repository) : ViewMode
     private val mSignUpFailedError = MutableLiveData<String>()
     val signUpFailedError : LiveData<String> =  mSignUpFailedError
 
+    private val _showError = MutableLiveData<String>()
+    val showError: LiveData<String> = _showError
+
 
     fun login(email: String, password: String, firebaseToken: String) {
 
@@ -39,7 +42,7 @@ class AuthViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
                 when(it) {
 
-                    HttpStatusCode.OK -> mCallActivity.postValue(true)
+                    HttpStatusCode.OK -> _loginSuccess.postValue(true)
 
                     HttpStatusCode.UNAUTHORIZED ->
                         mLoginErrorMessage.postValue("Email not registered")
@@ -71,6 +74,28 @@ class AuthViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
             }
         }
+    }
+
+    fun getNurseById(nurseId: Int) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+
+            repo.getNurseById(nurseId) {
+
+                when(it) {
+                    HttpStatusCode.FAILED -> {
+                        _showError.postValue("Something went wrong!")
+                    }
+                    else -> {}
+                }
+            }
+
+        }
+    }
+
+    fun setLoginSuccessFalse() {
+
+        _loginSuccess.postValue(false)
     }
 
 }

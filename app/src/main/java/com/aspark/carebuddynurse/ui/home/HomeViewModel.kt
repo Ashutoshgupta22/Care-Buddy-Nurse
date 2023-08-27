@@ -17,21 +17,6 @@ class HomeViewModel  @Inject constructor(private val repo: Repository): ViewMode
     private var _showError = MutableLiveData<String>()
     val showError: LiveData<String> = _showError
 
-    fun getNurseById(nurseId: Int) {
 
-        viewModelScope.launch(Dispatchers.IO) {
-
-            repo.getNurseById(nurseId) {
-
-                when(it) {
-                    HttpStatusCode.FAILED -> {
-                        _showError.postValue("Something went wrong!")
-                    }
-                    else -> {}
-                }
-            }
-
-        }
-    }
 
 }

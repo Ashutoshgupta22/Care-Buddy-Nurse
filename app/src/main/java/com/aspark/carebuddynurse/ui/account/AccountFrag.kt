@@ -15,6 +15,7 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.aspark.carebuddynurse.R
 import com.aspark.carebuddynurse.databinding.FragmentAccountBinding
 import com.aspark.carebuddynurse.model.Nurse.Companion.currentNurse
 import com.bumptech.glide.Glide
@@ -40,7 +41,7 @@ class AccountFrag: Fragment() {
                 Log.i("AccountFrag", "onViewCreated: Image selected uri: $it")
 
                 setProfilePic(it)
-                currentNurse.profilePic = it.toString()
+                currentNurse.profilePicUrl = it.toString()
 
                 val contentResolver = requireContext().contentResolver
                 val cacheDir = requireContext().cacheDir
@@ -73,9 +74,8 @@ class AccountFrag: Fragment() {
             binding.tvAccountEmail.text = currentNurse.email
         }
 
-        if ( currentNurse.profilePic.isNotEmpty() ) {
-
-            setProfilePic(currentNurse.profilePic.toUri())
+        if ( currentNurse.profilePicUrl.isNotEmpty() ) {
+            setProfilePic(currentNurse.profilePicUrl.toUri())
         }
 
         binding.cvProfilePic.setOnClickListener {
@@ -86,9 +86,13 @@ class AccountFrag: Fragment() {
 
         binding.btnSignOut.setOnClickListener {
 
-            setIsNurseSignedIn(false)
+            setSignedOut()
             val action = AccountFragDirections.actionAccountFragToLoginFrag()
             navController.navigate(action)
+           // navController.popBackStack(R.id.loginFrag, false)
+          //  navController.popBackStack(R.id.loginFrag, false)
+           // val action = AccountFragDirections.actionAccountFragToLoginFrag()
+            //navController.navigate(action)
             //  navController.popBackStack()
         }
     }
@@ -102,20 +106,16 @@ class AccountFrag: Fragment() {
             .into(binding.ivProfilePic)
     }
 
-    private fun setIsNurseSignedIn(b: Boolean) {
+    private fun setSignedOut() {
 
         val preferences = requireContext().getSharedPreferences(requireContext().packageName,
             AppCompatActivity.MODE_PRIVATE)
         val editor = preferences.edit()
 
-        Log.i("nurseHomeActivity", "setNurseSignedIn: isSignedIn $b")
+        Log.i("AccountFrag", "setSignedOut - Signed Out")
 
-        editor.putBoolean("is_signed_in", b)
-
-        if (b)
-            editor.putString("nurseEmail", currentNurse.email)
-
+        editor.putBoolean("isSignedIn", false)
+        editor.putInt("nurseId", -1)
         editor.apply()
     }
-
 }

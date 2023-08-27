@@ -11,14 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.aspark.carebuddynurse.databinding.FragmentHomeBinding
-import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.model.Nurse.Companion.currentNurse
 import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
@@ -43,10 +41,11 @@ class HomeFrag: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val navController = findNavController()
+        checkPermissions()
 
-        if ( currentNurse.profilePic.isNotEmpty() ) {
+        if ( currentNurse.profilePicUrl.isNotEmpty() ) {
 
-            setProfilePic(currentNurse.profilePic.toUri())
+            setProfilePic(currentNurse.profilePicUrl.toUri())
         }
 
         binding.ivHomeProfilePic.setOnClickListener {
@@ -54,31 +53,6 @@ class HomeFrag: Fragment() {
             val action = HomeFragDirections.actionHomeFragToAccountFrag()
             navController.navigate(action)
         }
-
-        val preferences = requireContext().getSharedPreferences(requireContext().packageName,
-            AppCompatActivity.MODE_PRIVATE)
-        val isSignedIn = preferences.getBoolean("is_signed_in", false)
-
-        if (! isSignedIn) {
-
-            val action = HomeFragDirections.actionHomeFragToLoginFrag()
-            navController.navigate(action)
-        }
-        else {
-            checkPermissions()
-            val nurseId = preferences.getInt("nurseId", -1)
-
-            Log.i("HomeFrag", "onViewCreated: nurseId-$nurseId")
-
-            if (nurseId != -1)
-                viewModel.getNurseById(nurseId)
-
-            setIsNurseSignedIn(true)
-
-        }
-
-
-        Log.d("HomeFrag", "onViewCreated: Home Frag called")
 
     }
 
@@ -125,25 +99,7 @@ class HomeFrag: Fragment() {
             // no need to ask notification permission for android version below 13
             notificationPermissionRequest.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
-
     }
-
-    private fun setIsNurseSignedIn(b: Boolean) {
-
-        val preferences = requireContext().getSharedPreferences(requireContext().packageName,
-            AppCompatActivity.MODE_PRIVATE)
-        val editor = preferences.edit()
-
-        Log.i("nurseHomeActivity", "setNurseSignedIn: isSignedIn $b")
-
-        editor.putBoolean("is_signed_in", b)
-
-        if (b)
-            editor.putInt("nurseId", currentNurse.id)
-
-        editor.apply()
-    }
-
 
     private fun setProfilePic(it: Uri) {
 

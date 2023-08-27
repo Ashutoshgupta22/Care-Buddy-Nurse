@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFrag">
+    app:startDestination="@id/loginFrag">
 
     <fragment
         android:id="@+id/loginFrag"
@@ -11,25 +11,23 @@
         <action
             android:id="@+id/action_loginFrag_to_signUpFrag"
             app:destination="@id/signUpFrag" />
+        <action
+            android:id="@+id/action_loginFrag_to_homeFrag"
+            app:destination="@id/homeFrag"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
 
     </fragment>
 
     <fragment
         android:id="@+id/signUpFrag"
         android:name="com.aspark.carebuddynurse.ui.auth.SignUpFrag"
-        android:label="SignUpFrag" >
-        <action
-            android:id="@+id/action_signUpFrag_to_loginFrag"
-            app:destination="@id/loginFrag" />
-    </fragment>
+        android:label="SignUpFrag" />
 
     <fragment
         android:id="@+id/homeFrag"
         android:name="com.aspark.carebuddynurse.ui.home.HomeFrag"
         android:label="HomeFrag" >
-        <action
-            android:id="@+id/action_homeFrag_to_loginFrag"
-            app:destination="@id/loginFrag" />
         <action
             android:id="@+id/action_homeFrag_to_accountFrag"
             app:destination="@id/accountFrag" />
@@ -40,6 +38,9 @@
         android:label="AccountFrag" >
         <action
             android:id="@+id/action_accountFrag_to_loginFrag"
-            app:destination="@id/loginFrag" />
+            app:destination="@id/loginFrag"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            app:exitAnim="@anim/nav_default_exit_anim"/>
     </fragment>
 </navigation>
