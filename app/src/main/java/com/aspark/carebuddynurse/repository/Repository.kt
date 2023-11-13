@@ -93,8 +93,9 @@ class Repository @Inject constructor( private val api: Api) {
 
     fun signUp(nurse: Nurse, callback: (HttpStatusCode) -> Unit) {
 
-        api
-            .signUp(nurse)
+        nurse.pincode = "560037"
+        
+        api.signUp(nurse)
             .enqueue(object : Callback<Nurse> {
 
                 override fun onResponse(call: Call<Nurse>, response: Response<Nurse>) {

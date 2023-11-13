@@ -48,6 +48,7 @@ class LoginFrag : Fragment() {
 
         if (isSignedIn && nurseId != -1) {
 
+            Log.i("LoginFrag", "onViewCreated: nurseID-$nurseId")
             viewModel.getNurseById(nurseId)
             val action = LoginFragDirections.actionLoginFragToHomeFrag()
             navController.navigate(action)

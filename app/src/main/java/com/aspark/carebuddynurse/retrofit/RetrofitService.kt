@@ -9,8 +9,11 @@ class RetrofitService private constructor(){
 
     companion object {
 
+        private const val BASE_URL = "http://aspark-care-buddy.ap-south-1.elasticbeanstalk.com"
+        //private val BASE_URL = "http://192.168.1.4-:8080"
+
        val retrofit : Retrofit = Retrofit.Builder()
-            .baseUrl("http://192.168.1.8:8080") //ip address and server port number
+            .baseUrl(BASE_URL) //ip address and server port number
             .addConverterFactory(GsonConverterFactory.create(Gson()))
             .build()
     }

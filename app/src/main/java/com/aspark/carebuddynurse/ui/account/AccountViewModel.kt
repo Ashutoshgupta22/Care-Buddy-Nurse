@@ -22,11 +22,6 @@ class AccountViewModel @Inject constructor(private val repo: Repository): ViewMo
                          contentResolver: ContentResolver,
                          cacheDir: File) {
 
-//        val imageFile = File(uri.path)
-//        val requestBody = RequestBody.create(MediaType.parse("image/*"), imageFile)
-//        val body = MultipartBody.Part.createFormData("file", imageFile.name, requestBody)
-
-
         viewModelScope.launch(Dispatchers.IO) {
 
             val uploadFile: MultipartBody.Part? = convertToFile(uri, id, contentResolver, cacheDir)
@@ -45,7 +40,7 @@ class AccountViewModel @Inject constructor(private val repo: Repository): ViewMo
     ): MultipartBody.Part? {
 
         val inputStream = contentResolver.openInputStream(imageUri)
-        val tempFile = File(cacheDir, "temp_image.jpg")
+        val tempFile = File(cacheDir, "profile_nurse_$id.jpg")
         tempFile.outputStream().use {
             inputStream?.copyTo(it)
         }
