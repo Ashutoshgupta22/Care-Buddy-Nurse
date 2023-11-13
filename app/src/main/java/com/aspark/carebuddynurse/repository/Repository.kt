@@ -3,17 +3,19 @@ package com.aspark.carebuddynurse.repository
 import android.util.Log
 import com.aspark.carebuddynurse.api.Api
 import com.aspark.carebuddynurse.api.LoginRequest
+import com.aspark.carebuddynurse.chat.StanzaLoggingListener
 import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.model.Nurse.Companion.currentNurse
 import com.aspark.carebuddynurse.retrofit.HttpStatusCode
 import okhttp3.MultipartBody
+import org.jivesoftware.smack.tcp.XMPPTCPConnection
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import javax.inject.Inject
 
-class Repository @Inject constructor( private val api: Api) {
-
+class Repository @Inject constructor( private val api: Api,
+    private val connection: XMPPTCPConnection) {
 
     fun login(nurseEmail: String, password: String,
               firebaseToken: String, callback: (HttpStatusCode) -> Unit) {
@@ -31,17 +33,16 @@ class Repository @Inject constructor( private val api: Api) {
 
                         Log.i("Repository", "Welcome Back!")
                         currentNurse = response.body()!!
-//                        val(id, firstName, lastName, email) = response.body()!!
-//                        currentNurse.id = id
-//                        currentNurse.firstName = firstName
-//                        currentNurse.lastName = lastName
-//                        currentNurse.email = email
 
                         Log.i("Repository", "onResponse: nurseid-${currentNurse.id}")
 
                         setNurseFirebaseToken(firebaseToken, nurseEmail)
-
                         callback(HttpStatusCode.OK)
+
+                        connection.connect().login("nurse${currentNurse.id}",
+                            "nurse${currentNurse.id}")
+                        connection.addStanzaListener(StanzaLoggingListener(), null)
+                        Log.i("Module", "provideXMPPTCPConnection: chat connected $connection")
 
                     }
                     else if (response.code() == HttpStatusCode.UNAUTHORIZED.code) {
@@ -70,8 +71,7 @@ class Repository @Inject constructor( private val api: Api) {
 
         currentNurse.firebaseToken = firebaseToken
 
-        api
-            .setNurseFirebaseToken(email, firebaseToken)
+        api.setNurseFirebaseToken(email, firebaseToken)
             .enqueue(object : Callback<Boolean> {
                 override fun onResponse(call: Call<Boolean>, response: Response<Boolean>) {
 
@@ -128,7 +128,6 @@ class Repository @Inject constructor( private val api: Api) {
                 override fun onResponse(call: Call<String>,
                                         response: Response<String>) {
 
-
                     if (response.isSuccessful && response.body() != null)
                         Log.i("Repository", "onResponse: Profile pic link- "
                         + response.body().toString())
@@ -152,16 +151,20 @@ class Repository @Inject constructor( private val api: Api) {
             .enqueue(object : Callback<Nurse> {
                 override fun onResponse(call: Call<Nurse>, response: Response<Nurse>) {
 
-                    if (response.isSuccessful && response.body()!= null)
+                    if (response.isSuccessful && response.body()!= null) {
                         currentNurse = response.body()!!
+
+                        connection.connect().login("nurse${currentNurse.id}",
+                            "nurse${currentNurse.id}")
+                        connection.addStanzaListener(StanzaLoggingListener(), null)
+                        Log.i("Module", "provideXMPPTCPConnection: chat connected $connection")
+                    }
 
                     else {
                         callback(HttpStatusCode.FAILED)
                         Log.e("Repository", "onResponse: " +
                                 "getNurseById UNSUCCESSFUL ${response.code()}" )
                     }
-
-
                 }
 
                 override fun onFailure(call: Call<Nurse>, t: Throwable) {
@@ -171,7 +174,6 @@ class Repository @Inject constructor( private val api: Api) {
                             "getNurseById FAILED", t )
 
                 }
-
             })
     }
 }

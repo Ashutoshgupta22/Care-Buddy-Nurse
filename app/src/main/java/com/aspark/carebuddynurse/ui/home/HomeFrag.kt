@@ -44,7 +44,6 @@ class HomeFrag: Fragment() {
         checkPermissions()
 
         if ( currentNurse.profilePicUrl.isNotEmpty() ) {
-
             setProfilePic(currentNurse.profilePicUrl.toUri())
         }
 
@@ -53,7 +52,6 @@ class HomeFrag: Fragment() {
             val action = HomeFragDirections.actionHomeFragToAccountFrag()
             navController.navigate(action)
         }
-
     }
 
     private fun checkPermissions() {

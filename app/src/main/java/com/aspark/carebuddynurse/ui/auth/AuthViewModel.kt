@@ -25,10 +25,10 @@ class AuthViewModel @Inject constructor(private val repo: Repository) : ViewMode
     val showNetworkError: LiveData<Boolean> = mShowNetworkError
 
     private val mStartActivity = MutableLiveData<Boolean>()
-    val startActivity : LiveData<Boolean> = mStartActivity
+    val startActivity: LiveData<Boolean> = mStartActivity
 
     private val mSignUpFailedError = MutableLiveData<String>()
-    val signUpFailedError : LiveData<String> =  mSignUpFailedError
+    val signUpFailedError: LiveData<String> = mSignUpFailedError
 
     private val _showError = MutableLiveData<String>()
     val showError: LiveData<String> = _showError
@@ -40,7 +40,7 @@ class AuthViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
             repo.login(email, password, firebaseToken) {
 
-                when(it) {
+                when (it) {
 
                     HttpStatusCode.OK -> _loginSuccess.postValue(true)
 
@@ -60,9 +60,9 @@ class AuthViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
         viewModelScope.launch(Dispatchers.IO) {
 
-            repo.signUp( nurse ) {
+            repo.signUp(nurse) {
 
-                when(it) {
+                when (it) {
 
                     HttpStatusCode.OK -> mStartActivity.postValue(true)
 
@@ -71,7 +71,6 @@ class AuthViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
                     else -> {}
                 }
-
             }
         }
     }
@@ -82,14 +81,14 @@ class AuthViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
             repo.getNurseById(nurseId) {
 
-                when(it) {
+                when (it) {
                     HttpStatusCode.FAILED -> {
                         _showError.postValue("Something went wrong!")
                     }
+
                     else -> {}
                 }
             }
-
         }
     }
 
@@ -97,5 +96,4 @@ class AuthViewModel @Inject constructor(private val repo: Repository) : ViewMode
 
         _loginSuccess.postValue(false)
     }
-
 }

@@ -78,7 +78,7 @@ class LoginFrag : Fragment() {
             Log.d("LoginFrag", "onCreate: callActivity observer called")
 
             it?.let {
-                if (it){
+                if (it) {
                     setSignedIn()
                     val action = LoginFragDirections.actionLoginFragToHomeFrag()
                     navController.navigate(action)

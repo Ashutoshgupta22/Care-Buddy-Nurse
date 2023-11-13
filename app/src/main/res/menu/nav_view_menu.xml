@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/homeFrag"
+        android:title="@string/home"/>
+
+    <item android:id="@+id/chatListFragment"
+        android:title="@string/chat"/>
+</menu>

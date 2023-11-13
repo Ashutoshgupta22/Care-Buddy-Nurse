@@ -24,4 +24,6 @@
     <string name="login_failed">"Login failed"</string>
     <string name="specialities">Specialities</string>
     <string name="in_years">(in years)</string>
+    <string name="chat">Chat</string>
+    <string name="title_activity_chat">ChatActivity</string>
 </resources>

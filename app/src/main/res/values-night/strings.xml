@@ -15,4 +15,5 @@
     <string name="experience">Experience\n</string>
     <string name="specialities">Specialities</string>
     <string name="in_years">(in years)</string>
+    <string name="chat">Chat</string>
 </resources>
