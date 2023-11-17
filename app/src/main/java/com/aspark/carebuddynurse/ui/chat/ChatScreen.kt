@@ -30,6 +30,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +47,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.LifecycleOwner
 import com.aspark.carebuddynurse.R
+import com.aspark.carebuddynurse.chat.ChatMessage
 import com.aspark.carebuddynurse.chat.MessageData
 import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.ui.chat.ui.theme.CareBuddyNurseTheme
@@ -58,6 +61,7 @@ arrayList is mutable which causes problem with recomposition **/
 @Composable
 fun ChatScreen(
     nurse: Nurse, messageData: List<MessageData>,
+    chatMessage: ChatMessage, lifecycleOwner: LifecycleOwner,
     onUpBtnClick: () -> Unit,
     onSendClick: (MessageData) -> Unit) {
 
@@ -70,12 +74,7 @@ fun ChatScreen(
         Messages( Modifier.weight(1f), messageList, listState)
 
         LaunchedEffect(key1 = null) {
-
-            /** scroll to bottom when screen is visible **/
-            /** scroll to bottom when screen is visible **/
-            /** scroll to bottom when screen is visible **/
-
-            /** scroll to bottom when screen is visible **/
+            // scroll to bottom when screen is visible
             coroutineScope.launch {
                 listState.scrollToItem(messageList.lastIndex)
             }
@@ -90,7 +89,24 @@ fun ChatScreen(
                 listState.animateScrollToItem(messageList.lastIndex)
 
             }
+        }
+    }
 
+    DisposableEffect(Unit) {
+        chatMessage.receiveMessage() // Call receiveMessage to start listening for incoming messages
+        onDispose { /* Any cleanup code if needed */ }
+    }
+
+    LaunchedEffect(chatMessage.receivedMessage) {
+        // Observe changes in receivedMessage
+        chatMessage.receivedMessage.observe(lifecycleOwner) { newMessage ->
+            newMessage?.let {
+                messageList = ArrayList(messageList + it)
+
+                coroutineScope.launch {
+                    listState.animateScrollToItem(messageList.lastIndex)
+                }
+            }
         }
     }
 }
@@ -299,9 +315,9 @@ fun PreviewChatScreen() {
 
     }
 
-    CareBuddyNurseTheme {
-        ChatScreen(
-            nurse = Nurse.currentNurse, messageData = messagesList,
-            onUpBtnClick = {}) {}
-    }
+//    CareBuddyNurseTheme {
+//        ChatScreen(
+//            nurse = Nurse.currentNurse, messageData = messagesList,
+//            onUpBtnClick = {}) {}
+//    }
 }

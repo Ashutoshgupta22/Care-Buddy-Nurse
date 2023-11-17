@@ -43,4 +43,16 @@
             app:popUpToInclusive="true"
             app:exitAnim="@anim/nav_default_exit_anim"/>
     </fragment>
+    <fragment
+        android:id="@+id/chatListFragment"
+        android:name="com.aspark.carebuddynurse.ui.chat.ChatListFragment"
+        android:label="ChatListFragment" >
+        <action
+            android:id="@+id/action_chatListFragment2_to_chatActivity"
+            app:destination="@id/chatActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/chatActivity"
+        android:name="com.aspark.carebuddynurse.ui.chat.ChatActivity"
+        android:label="ChatActivity" />
 </navigation>

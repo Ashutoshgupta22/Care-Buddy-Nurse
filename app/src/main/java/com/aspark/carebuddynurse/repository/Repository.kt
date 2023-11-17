@@ -3,6 +3,7 @@ package com.aspark.carebuddynurse.repository
 import android.util.Log
 import com.aspark.carebuddynurse.api.Api
 import com.aspark.carebuddynurse.api.LoginRequest
+import com.aspark.carebuddynurse.chat.ChatMessage
 import com.aspark.carebuddynurse.chat.StanzaLoggingListener
 import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.model.Nurse.Companion.currentNurse
@@ -42,6 +43,7 @@ class Repository @Inject constructor( private val api: Api,
                         connection.connect().login("nurse${currentNurse.id}",
                             "nurse${currentNurse.id}")
                         connection.addStanzaListener(StanzaLoggingListener(), null)
+                        ChatMessage(connection).receiveMessage()
                         Log.i("Module", "provideXMPPTCPConnection: chat connected $connection")
 
                     }
@@ -157,6 +159,8 @@ class Repository @Inject constructor( private val api: Api,
                         connection.connect().login("nurse${currentNurse.id}",
                             "nurse${currentNurse.id}")
                         connection.addStanzaListener(StanzaLoggingListener(), null)
+                        ChatMessage(connection).receiveMessage()
+
                         Log.i("Module", "provideXMPPTCPConnection: chat connected $connection")
                     }
 

@@ -36,7 +36,7 @@ object Module {
         return XMPPTCPConnectionConfiguration.builder()
             //.setUsernameAndPassword("user1", "user1")
             .setXmppDomain("aspark-care-buddy.ap-south-1.elasticbeanstalk.com")
-            .setHost("192.168.1.6")
+            .setHost("192.168.1.4")
             .setConnectTimeout(5000)
             .setPort(5222)
             .setSecurityMode(ConnectionConfiguration.SecurityMode.ifpossible)

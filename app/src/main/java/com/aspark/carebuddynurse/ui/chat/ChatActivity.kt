@@ -11,13 +11,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.aspark.carebuddynurse.chat.ChatMessage
 import com.aspark.carebuddynurse.chat.MessageData
 import com.aspark.carebuddynurse.model.Nurse
 import com.aspark.carebuddynurse.ui.chat.ui.theme.CareBuddyNurseTheme
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class ChatActivity : ComponentActivity() {
+class ChatActivity @Inject constructor(): ComponentActivity() {
 
     private val viewModel: ChatActivityViewModel by viewModels()
 
@@ -49,6 +51,8 @@ class ChatActivity : ComponentActivity() {
 //        nurse.firstName = "John"
 //        nurse.lastName = "Doe"
 
+        val chatMessage = viewModel.getChatMessage()
+
         setContent {
             CareBuddyNurseTheme {
                 // A surface container using the 'background' color from the theme
@@ -56,13 +60,18 @@ class ChatActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ChatScreen(nurse = Nurse.currentNurse, messageData = messagesList,{
-                        finish()
-                    }) {
+                    ChatScreen(nurse = Nurse.currentNurse,
+                        messageData = messagesList, chatMessage,
+                        this, { finish() }) {
+
                         viewModel.sendMessage(it)
                     }
                 }
             }
         }
+    }
+
+    private fun setUi() {
+
     }
 }
